@@ -224,7 +224,7 @@ abstract class base {
      */
     protected function user_fields_sql() {
         $userfieldsarr = get_all_user_name_fields();
-        $userfieldsarr = array_merge($userfieldsarr, ['username', 'department', 'institution']);
+        $userfieldsarr = array_merge($userfieldsarr, ['username', 'department', 'institution', 'idnumber']);
         $userfields = '';
         foreach ($userfieldsarr as $field) {
             $userfields .= $userfields === '' ? '' : ', ';
