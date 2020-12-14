@@ -122,7 +122,7 @@ class text extends responsetype {
                     'WHERE question_id=' . $this->question->id . $rsql .
                     ' AND t.response_id = r.id' .
                     ' AND u.id = r.userid ' .
-                    'ORDER BY u.lastname, u.firstname, r.submitted';
+                    'ORDER BY r.submitted DESC';
         }
         return $DB->get_records_sql($sql, $params);
     }
@@ -210,10 +210,15 @@ class text extends responsetype {
                 }
                 // The 'evencolor' attribute is used by the PDF template.
                 $response->evencolor = $evencolor;
+                $response->date = userdate($row->submitted, get_string('strftimedatetime'));
                 $pagetags->responses[] = (object)['response' => $response];
                 $evencolor = !$evencolor;
             }
-
+            // sort table only when row count is greater than one.
+            if (count($weights) > 1) {
+                $pagetags->sortresponse = true;
+            }
+            $pagetags->tableid = $this->question->id;
             if ($showtotals == 1) {
                 $pagetags->total = new \stdClass();
                 $pagetags->total->total = "$respondents/$participants";

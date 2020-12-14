@@ -376,7 +376,23 @@ td.selected {
 #page-mod-questionnaire-report .generaltable.questionnairereport td {
     border: 1px solid silver;
 }
+#page-mod-questionnaire-report .generaltable[id]  th.qn-handcursor {
+    cursor: pointer;
+}
 
+#page-mod-questionnaire-report  th.c0 a span[class^='icon-container-'],
+#page-mod-questionnaire-report  th.c1 a span.icon-container-asc,
+#page-mod-questionnaire-report  th.asc a span.icon-container-desc,
+#page-mod-questionnaire-report  th.desc a span.icon-container-asc {
+    display: none;
+}
+
+#page-mod-questionnaire-report  th.asc a span.icon-container-asc,
+#page-mod-questionnaire-report  th.desc a span.icon-container-desc {
+    display: inline-block;
+}
+
+#page-mod-questionnaire-report .frtlst,
 .qn-container .smalltext {
     font-size: 0.75em;
 }

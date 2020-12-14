@@ -84,3 +84,10 @@
         {{#bottomnavigationbar}}<div class="box respondentsnavbar">{{{.}}}</div>{{/bottomnavigationbar}}
     </div>
 </div>
+{{#js}}
+    require(['jquery', 'mod_questionnaire/table_sort'], function($, TableSort) {
+        $(document).ready(function() {
+            TableSort.init();
+        });
+    });
+{{/js}}
