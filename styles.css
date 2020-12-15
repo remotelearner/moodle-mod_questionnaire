@@ -388,3 +388,8 @@ td.selected {
 .qn-indent {
     margin-left: 20px;
 }
+     
+#page-mod-questionnaire-questions #fitem_id_allchoices #id_allchoices,
+#page-mod-questionnaire-questions #fitem_id_allnameddegrees #id_allnameddegrees {
+    resize: both;    
+}
