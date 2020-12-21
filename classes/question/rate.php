@@ -580,10 +580,8 @@ class rate extends question {
         }
 
         if ($num == 0) {
-            if (!$this->has_dependencies()) {
-                if ($this->required()) {
-                    $answered = false;
-                }
+            if ($this->required()) {
+                $answered = false;
             }
         }
         return $answered;
