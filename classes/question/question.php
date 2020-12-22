@@ -894,7 +894,7 @@ abstract class question {
         if ($response instanceof \mod_questionnaire\responsetype\response\response) {
             $skippedquestion = !isset($response->answers[$this->id]);
         } else {
-            $skippedquestion = !empty($response) && !array_key_exists('q'.$this->id, $response);
+            $skippedquestion = !empty($response) && !property_exists($response, 'q' . $this->id);
         }
 
         // If we are on report page and this questionnaire has dependquestions and this question was skipped.
@@ -972,7 +972,7 @@ abstract class question {
         $this->form_required($mform);
         $this->form_length($mform);
         $this->form_precise($mform);
-        $this->form_question_text($mform, $form->_customdata['modcontext']);
+        $this->form_question_text($mform, isset($form->_customdata) ? $form->_customdata['modcontext'] : '');
 
         if ($this->has_choices()) {
             // This is used only by the question editing form.

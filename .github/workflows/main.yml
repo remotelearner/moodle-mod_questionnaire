@@ -1,0 +1,105 @@
+name: Tests
+
+on: push
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        options: --health-cmd="pg_isready" --health-interval 10s --health-timeout 5s --health-retries 5
+        ports:
+          - 5432:5432
+      mariadb:
+        image: mariadb
+        env:
+          MYSQL_USER: 'root'
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+        options: --health-cmd="mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
+        ports:
+          - 3306:3306
+
+    strategy:
+      fail-fast: false
+      matrix:
+        moodle-branch: ['master', 'MOODLE_310_STABLE', 'MOODLE_39_STABLE']
+        php: ['7.4', '7.3']
+        database: ['mariadb', 'pgsql']
+
+    steps:
+      - name: checkout plugin
+        uses: actions/checkout@v2
+        with:
+          path: this-plugin
+
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.15.0'
+
+      - name: setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pgsql, mysqli
+
+      - name: checkout moodle-plugin-ci
+        uses: actions/checkout@v2
+        with:
+          repository: moodlehq/moodle-plugin-ci
+          path: ci
+
+      - name: other
+        run: |
+           cd ci
+           composer install
+           echo "$(cd bin; pwd)" >> $GITHUB_PATH
+           echo "$(cd vendor/bin; pwd)" >> $GITHUB_PATH
+           sudo locale-gen en_AU.UTF-8
+
+      - name: install Moodle
+        run: moodle-plugin-ci install --db-host=127.0.0.1 --plugin this-plugin
+        env:
+          DB: ${{ matrix.database }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+      
+      - name: phplint
+        run: moodle-plugin-ci phplint
+
+      - name: phpcpd
+        run: moodle-plugin-ci phpcpd
+
+      - name: phpmd
+        run: moodle-plugin-ci phpmd
+
+      - name: codechecker
+        run: moodle-plugin-ci codechecker
+
+      - name: validate
+        run: moodle-plugin-ci validate
+
+      - name: savepoints
+        run: moodle-plugin-ci savepoints
+
+      - name: mustache
+        run: moodle-plugin-ci mustache || true
+
+      - name: grunt
+        run: moodle-plugin-ci grunt
+        if: matrix.moodle-branch == 'master'
+
+      - name: phpunit 
+        run: moodle-plugin-ci phpunit --coverage-text
+
+      - name: firefox
+        run: moodle-plugin-ci behat
+      
+      - name: chrome
+        run: moodle-plugin-ci behat --profile chrome
+
