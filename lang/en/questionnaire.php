@@ -401,6 +401,7 @@ $string['previewing'] = ' Previewing Questionnaire ';
 $string['previous'] = 'Previous';
 $string['previouspage'] = 'Previous Page';
 $string['print'] = 'Print this Response';
+$string['printbutton'] = 'Print';
 $string['printblank'] = 'Print Blank';
 $string['printblanktooltip'] = 'Opens printer-friendly window with blank Questionnaire';
 $string['printtooltip'] = 'Opens printer-friendly window with current Response';

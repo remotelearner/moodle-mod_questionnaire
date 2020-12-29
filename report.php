@@ -117,6 +117,7 @@ $PAGE->set_url($url);
 $PAGE->set_context($context);
 if ($outputtarget == 'print') {
     $PAGE->set_pagelayout('popup');
+    $PAGE->requires->js_init_call('M.mod_questionnaire.init_printing');
 }
 
 // Tab setup.

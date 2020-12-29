@@ -82,5 +82,10 @@
         {{#feedbacknotes}}{{{.}}}{{/feedbacknotes}}
         {{#responses}}{{{.}}}{{/responses}}
         {{#bottomnavigationbar}}<div class="box respondentsnavbar">{{{.}}}</div>{{/bottomnavigationbar}}
+        {{#printparam}}
+            <button id="print-button" title="{{#str}}print, mod_questionnaire{{/str}}">
+                    {{#str}}printbutton, mod_questionnaire{{/str}}
+            </button>
+        {{/printparam}}
     </div>
 </div>
