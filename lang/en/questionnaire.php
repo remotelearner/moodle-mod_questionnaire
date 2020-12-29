@@ -144,8 +144,8 @@ $string['displaymethod'] = 'Display method not defined for question.';
 $string['download'] = 'Download';
 $string['downloadpdf'] = 'Download PDF';
 $string['downloadtextformat'] = 'Download';
-$string['downloadtextformat_help'] = 'This feature enables you to save all the responses of a questionnaire to a selectable, supported file format.
- You can choose to include extra data items in the export, as well as choose to automatically send the file to selected users.';
+$string['downloadtextformat_help'] = 'This feature enables you to download questionnaire responses in a file format of your choice.
+ The file can then be opened in a spreadsheet program (e.g. MS Excel or Open Office Calc) or a statistical package for further processing.';
 $string['downloadtextformat_link'] = 'mod/questionnaire/report#Download_in_text_format';
 $string['downloadtypes'] = 'Report type';
 $string['dropdown'] = 'Dropdown Box';

@@ -441,10 +441,10 @@ switch ($action) {
         }
         $output = '';
         $output .= "<br /><br />\n";
-        $output .= $questionnaire->renderer->help_icon('downloadtextformat', 'questionnaire');
-        $output .= '&nbsp;' . (get_string('downloadtextformat', 'questionnaire')) . ':&nbsp;' .
-            get_string('responses', 'questionnaire').'&nbsp;'.$groupname;
-        $output .= $questionnaire->renderer->heading(get_string('textdownloadoptions', 'questionnaire'));
+        $output .= html_writer::tag('h2', (get_string('downloadtextformat', 'questionnaire'))
+                . ':&nbsp;' . get_string('responses', 'questionnaire') . '&nbsp;' .
+                $groupname . $questionnaire->renderer->help_icon('downloadtextformat', 'questionnaire'));
+        $output .= $questionnaire->renderer->heading(get_string('textdownloadoptions', 'questionnaire'), 3);
         $output .= $questionnaire->renderer->box_start();
         $downloadparams = [
             'instance' => $instance,
