@@ -233,16 +233,13 @@ class rate extends question {
             }
             $nn = 100 - ($width * 2);
             $colwidth = ($nn / $this->length).'%';
-            $textalign = 'right';
             $width = $width . '%';
         } else if ($nocontent) {
             $width = '0%';
             $colwidth = (100 / $this->length).'%';
-            $textalign = 'right';
         } else {
             $width = '59%';
             $colwidth = (40 / $this->length).'%';
-            $textalign = 'left';
         }
 
         $choicetags->qelements['headerrow']['col1width'] = $width;
@@ -319,8 +316,7 @@ class rate extends question {
                 if ($this->osgood_rate_scale()) {
                     list($content, $contentright) = array_merge(preg_split('/[|]/', $content), array(' '));
                 }
-                $cols[] = ['colstyle' => 'text-align: '.$textalign.';',
-                           'coltext' => format_text($content, FORMAT_HTML, ['noclean' => true]).'&nbsp;'];
+                $cols[] = ['coltext' => format_text($content, FORMAT_HTML, ['noclean' => true]).'&nbsp;'];
 
                 $bg = 'c0 raterow';
                 if (($nbchoices > 1) && !$this->no_duplicate_choices()  && !$blankquestionnaire) {
@@ -389,6 +385,13 @@ class rate extends question {
                 if ($this->osgood_rate_scale()) {
                     $cols[] = ['coltext' => '&nbsp;'.format_text($contentright, FORMAT_HTML, ['noclean' => true])];
                 }
+
+                $rtlmode = right_to_left() ? true : false;
+                if ($rtlmode) {
+                    $cols = array_reverse($cols);
+                }
+
+                $choicetags->rtlmode = $rtlmode;
                 $choicetags->qelements['rows'][] = ['cols' => $cols];
             }
         }

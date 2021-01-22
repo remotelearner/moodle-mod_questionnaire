@@ -85,12 +85,12 @@
     <tbody>
 
     {{#choicelabelrow}}
-    <tr class="">
+    <tr>
         {{#column1}}
-        <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">{{{text}}}</td>
+        <td class="cell" style="width:{{width}};" scope="col">{{{text}}}</td>
         {{/column1}}
         {{#column2}}
-            <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">
+            <td class="cell" style="width:{{width}};" scope="col">
             <table style="width:100%" cellpadding="2" cellspacing="0" border="1">
                 <tbody>
                 <tr>
@@ -103,10 +103,10 @@
             </td>
         {{/column2}}
         {{#column3}}
-            <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">{{{text}}}</td>
+            <td class="cell" style="width:{{width}};" scope="col">{{{text}}}</td>
         {{/column3}}
         {{#column4}}
-            <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">{{{text}}}</td>
+            <td class="cell" style="width:{{width}};" scope="col">{{{text}}}</td>
         {{/column4}}
     </tr>
     {{/choicelabelrow}}
@@ -117,22 +117,22 @@
             <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">{{{text}}}</td>
         {{/column1}}
         {{#column2}}
-            <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">
+            <td class="cell" style="width:{{width}};" scope="col">
                 {{#imageurl}}<img style="height:12px; width: 6px;{{#margin}} {{margin}};{{/margin}}" alt="" src="{{imageurl}}" />{{/imageurl}}
             </td>
         {{/column2}}
         {{#column3}}
-            <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">{{{text}}}</td>
+            <td class="cell" style="width:{{width}};" scope="col">{{{text}}}</td>
         {{/column3}}
         {{#column4}}
-            <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">{{{text}}}</td>
+            <td class="cell" style="width:{{width}};" scope="col">{{{text}}}</td>
         {{/column4}}
     </tr>
     {{/choiceaverages}}
     {{#nodata.0}}
         <tr class="">
             {{#nodata}}
-                <td class="cell" style="text-align:{{align}}; width:{{width}};" scope="col">{{text}}</td>
+                <td class="cell" style="width:{{width}};" scope="col">{{text}}</td>
             {{/nodata}}
         </tr>
     {{/nodata.0}}

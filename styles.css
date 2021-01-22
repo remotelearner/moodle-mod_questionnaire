@@ -267,9 +267,6 @@ td.selected {
     margin-bottom: 1em;
 }
 
-.dir-rtl .qn-container {
-    text-align: right;
-}
 .qn-info {
     float: left;
     width: auto;

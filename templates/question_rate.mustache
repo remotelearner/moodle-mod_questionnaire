@@ -29,6 +29,7 @@
 
     Example context (json):
     {
+        "rtlmode": false,
         "qelements": [
             {
                 "twidth": "100%",
@@ -126,11 +127,17 @@
   <tbody>
     {{#qelements.headerrow}}
     <tr>
-      <td style="width:{{col1width}}"></td>
-      {{#colnya}}<td title="nya"></td>{{/colnya}}
+      {{^rtlmode}}
+        <td style="width:{{col1width}}"></td>
+        {{#colnya}}<td title="nya"></td>{{/colnya}}
+      {{/rtlmode}}
       {{#cols}}
       <td style="width:{{colwidth}}; text-align:center;" class="smalltext">{{{coltext}}}</td>
       {{/cols}}
+      {{#rtlmode}}
+        {{#colnya}}<td title="nya"></td>{{/colnya}}
+        <td style="width:{{col1width}}"></td>
+      {{/rtlmode}}
     {{/qelements.headerrow}}
     {{#qelements.rows}}
     <tr class="raterow">

@@ -449,7 +449,7 @@ class rank extends responsetype {
             $osgood = true;
             $stravgrank = get_string('averageposition', 'questionnaire');
         }
-        $stravg = '<div style="text-align:right">'.$stravgrank.$stravgvalue.'</div>';
+        $stravg = $stravgrank . $stravgvalue;
 
         $isna = $this->question->precise == 1;
         $isnahead = '';
@@ -462,13 +462,15 @@ class rank extends responsetype {
         $pagetags = new \stdClass();
         $pagetags->averages = new \stdClass();
 
+        $headeralign = right_to_left() ? 'left' : 'right';
+
         if ($isna) {
             $header1 = new \stdClass();
             $header1->text = '';
-            $header1->align = '';
+            $header1->align = $headeralign;
             $header2 = new \stdClass();
             $header2->text = $stravg;
-            $header2->align = '';
+            $header2->align = $headeralign;
             $header3 = new \stdClass();
             $header3->text = '&dArr;';
             $header3->align = 'center';
@@ -480,20 +482,20 @@ class rank extends responsetype {
                 $stravg = '<div style="text-align:center">'.$stravgrank.'</div>';
                 $header1 = new \stdClass();
                 $header1->text = '';
-                $header1->align = '';
+                $header1->align = $headeralign;
                 $header2 = new \stdClass();
                 $header2->text = $stravg;
-                $header2->align = '';
+                $header2->align = $headeralign;
                 $header3 = new \stdClass();
                 $header3->text = '';
                 $header3->align = 'center';
             } else {
                 $header1 = new \stdClass();
                 $header1->text = '';
-                $header1->align = '';
+                $header1->align = $headeralign;
                 $header2 = new \stdClass();
                 $header2->text = $stravg;
-                $header2->align = '';
+                $header2->align = $headeralign;
                 $header3 = new \stdClass();
                 $header3->text = '&dArr;';
                 $header3->align = 'center';

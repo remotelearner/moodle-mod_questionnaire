@@ -54,8 +54,8 @@
 <table class="generaltable">
     <thead>
     <tr>
-        <th class="header c0" style="text-align:left;" scope="col">{{#str}} num, mod_questionnaire {{/str}}</th>
-        <th class="header c1 lastcol" style="text-align:right;" scope="col">{{#str}} response, mod_questionnaire {{/str}}</th>
+        <th class="header c0" scope="col">{{#str}} num, mod_questionnaire {{/str}}</th>
+        <th class="header c1 lastcol" scope="col">{{#str}} response, mod_questionnaire {{/str}}</th>
     </tr>
     </thead>
     <tbody>
@@ -63,8 +63,8 @@
 {{#responses}}
     {{#response}}
     <tr class=""{{^response.evencolor}} style="background-color: #E5E5E6"{{/response.evencolor}}>
-        <td class="cell c0" style="text-align:left;">{{response.total}}</td>
-        <td class="cell c1 lastcol" style="text-align:right;">{{response.text}}</td>
+        <td class="cell c0">{{response.total}}</td>
+        <td class="cell c1 lastcol">{{response.text}}</td>
     </tr>
     {{/response}}
 {{/responses}}
@@ -73,8 +73,8 @@
         <td colspan="2"><div class="tabledivider"> </div></td>
     </tr>
     <tr class="lastrow"{{^total.evencolor}} style="background-color: #E5E5E6"{{/total.evencolor}}>
-        <td class="cell c0" style="text-align:left;">{{#str}} totalresponses, mod_questionnaire{{/str}}</td>
-        <td class="cell c1 lastcol" style="text-align:right;">{{total}}</td>
+        <td class="cell c0">{{#str}} totalresponses, mod_questionnaire{{/str}}</td>
+        <td class="cell c1 lastcol">{{total}}</td>
     </tr>
 {{/total}}
 {{#responses.0}}
