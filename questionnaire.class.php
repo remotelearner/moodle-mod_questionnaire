@@ -2925,9 +2925,10 @@ class questionnaire {
         if (!$this->survey_is_public()) {
             $courseid = $this->course->id;
             $coursename = $this->course->fullname;
+            $modulename = $this->name;
         } else {
             // For a public questionnaire, look for the course that used it.
-            $sql = 'SELECT q.id, q.course, c.fullname ' .
+            $sql = 'SELECT q.id, q.course, q.name, c.fullname ' .
                    'FROM {questionnaire_response} qr ' .
                    'INNER JOIN {questionnaire} q ON qr.questionnaireid = q.id ' .
                    'INNER JOIN {course} c ON q.course = c.id ' .
@@ -2935,9 +2936,11 @@ class questionnaire {
             if ($record = $DB->get_record_sql($sql, [$resprow->rid, 'y'])) {
                 $courseid = $record->course;
                 $coursename = $record->fullname;
+                $modulename = $record->name;
             } else {
                 $courseid = $this->course->id;
                 $coursename = $this->course->fullname;
+                $modulename = $this->name;
             }
         }
 
@@ -3004,6 +3007,9 @@ class questionnaire {
         if (in_array('username', $options)) {
             array_push($positioned, $username);
         }
+        if (in_array('modulename', $options)) {
+            array_push($positioned, $modulename);
+        }
         if (in_array('complete', $options)) {
             array_push($positioned, $resprow->complete);
         }
@@ -3046,7 +3052,7 @@ class questionnaire {
         $columns = array();
         $types = array();
         foreach ($options as $option) {
-            if (in_array($option, array('response', 'submitted', 'id'))) {
+            if (in_array($option, array('response', 'submitted', 'id', 'modulename'))) {
                 $columns[] = get_string($option, 'questionnaire');
                 $types[] = 0;
             } else {

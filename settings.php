@@ -33,7 +33,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext('questionnaire/maxsections',
                                     get_string('configmaxsections', 'questionnaire'),
                                     '', 10, PARAM_INT));
-    $choices = array(
+    $defaultchoices = array(
         'response' => get_string('response', 'questionnaire'),
         'submitted' => get_string('submitted', 'questionnaire'),
         'institution' => get_string('institution'),
@@ -44,9 +44,14 @@ if ($ADMIN->fulltree) {
         'fullname' => get_string('fullname'),
         'username' => get_string('username')
     );
+    // New downloadoptions can be added to this array.
+    $additionalchoices = array(
+        'modulename' => get_string('modulename', 'questionnaire'),
+    );
+    $choices = array_merge($defaultchoices, $additionalchoices);
 
     $settings->add(new admin_setting_configmultiselect('questionnaire/downloadoptions',
-            get_string('textdownloadoptions', 'questionnaire'), '', array_keys($choices), $choices));
+            get_string('textdownloadoptions', 'questionnaire'), '', array_keys($defaultchoices), $choices));
 
     $settings->add(new admin_setting_configcheckbox('questionnaire/allowemailreporting',
         get_string('configemailreporting', 'questionnaire'), get_string('configemailreportinglong', 'questionnaire'), 0));
