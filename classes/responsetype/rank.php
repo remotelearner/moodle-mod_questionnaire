@@ -132,6 +132,14 @@ class rank extends responsetype {
                 $record->choice_id = $answer->choiceid;
                 $record->rankvalue = $answer->value;
                 $resid = $DB->insert_record(static::response_table(), $record);
+                if (isset($responsedata->{$answer->choiceid . '_qother'})) {
+                    $otherrecord = new \stdClass();
+                    $otherrecord->response_id = $response->id;
+                    $otherrecord->question_id = $this->question->id;
+                    $otherrecord->choice_id = $answer->choiceid;
+                    $otherrecord->response = $responsedata->{$answer->choiceid . '_qother'};
+                    $DB->insert_record('questionnaire_response_other', $otherrecord);
+                }
             }
         }
         return $resid;
@@ -153,7 +161,7 @@ class rank extends responsetype {
             $rsql = ' AND response_id ' . $rsql;
         }
 
-        $select = 'question_id=' . $this->question->id . ' AND content NOT LIKE \'!other%\' ORDER BY id ASC';
+        $select = 'question_id=' . $this->question->id . ' ORDER BY id ASC';
         if ($rows = $DB->get_records_select('questionnaire_quest_choice', $select)) {
             foreach ($rows as $row) {
                 $this->counts[$row->content] = new \stdClass();
@@ -201,16 +209,25 @@ class rank extends responsetype {
                           GROUP BY c2.id) a ON a.id = c.id
                           order by c.id";
             $results = $DB->get_records_sql($sql, array_merge(array($this->question->id, $this->question->id), $params));
-            if (!empty ($rankvalue)) {
-                foreach ($results as $key => $result) {
-                    if (isset($value[$key])) {
-                        $result->averagevalue = $value[$key] / $result->num;
+            if (!empty($results)) {
+                $choiceids = array_keys($results);
+                $otherresultcontent = self::get_other_choice($choiceids);
+                if (!empty ($rankvalue)) {
+                    foreach ($results as $key => $result) {
+                        if (isset($value[$key])) {
+                            $result->averagevalue = $value[$key] / $result->num;
+                        }
                     }
                 }
             }
             // Reindex by 'content'. Can't do this from the query as it won't work with MS-SQL.
             foreach ($results as $key => $result) {
                 $results[$result->content] = $result;
+                if ($result->id) {
+                    if (isset($otherresultcontent[$result->id])) {
+                        $results[$result->content]->content = $otherresultcontent[$result->id];
+                    }
+                }
                 unset($results[$key]);
             }
             return $results;
@@ -224,15 +241,61 @@ class rank extends responsetype {
                           WHERE c2.question_id = ? AND a2.question_id = ? AND a2.choice_id = c2.id AND a2.rankvalue >= 0{$rsql}
                           GROUP BY c2.id) a ON a.id = c.id";
             $results = $DB->get_records_sql($sql, array_merge(array($this->question->id, $this->question->id), $params));
+            if (!empty($results)) {
+                $choiceids = array_keys($results);
+                $otherresultcontent = self::get_other_choice($choiceids);
+            }
+
             // Formula to calculate the best ranking order.
             $nbresponses = count($rids);
             foreach ($results as $key => $result) {
-                $result->average = ($result->sum + ($nbresponses - $result->num) * ($this->length + 1)) / $nbresponses;
+                if (isset($this->length)) {
+                    $result->average = ($result->sum + ($nbresponses - $result->num) * ($this->length + 1)) / $nbresponses;
+                } else {
+                    $result->average = ($result->sum + ($nbresponses - $result->num) * 1 ) / $nbresponses;
+                }
                 $results[$result->content] = $result;
+                if (isset($otherresultcontent[$result->id])) {
+                    $results[$result->content]->content = $otherresultcontent[$result->id];
+                }
                 unset($results[$key]);
             }
             return $results;
         }
+    }
+
+    /**
+     * @param $choiceids
+     * @return array
+     */
+    public function get_other_choice($choiceids) {
+        global $DB;
+        list($othersql, $params) = $DB->get_in_or_equal($choiceids);
+        $osql = "SELECT ro.*,rr.rankvalue FROM {questionnaire_response_other} ro
+             INNER JOIN {".static::response_table()."} rr ON ro.choice_id = rr.choice_id 
+                        AND ro.question_id = rr.question_id AND rr.response_id = ro.response_id
+                  WHERE ro.choice_id $othersql
+                     ";
+        $otheresults = $DB->get_records_sql($osql, $params);
+        $otherresultcontent = [];
+        if (!empty($otheresults)) {
+            foreach ($otheresults as $key => $oresult) {
+                if (array_key_last($otheresults) == $key) {
+                    if (isset($otherresultcontent[$oresult->choice_id])) {
+                        $otherresultcontent[$oresult->choice_id] .=  $oresult->response . '(' . $oresult->rankvalue . ')';
+                    } else {
+                        $otherresultcontent[$oresult->choice_id] = $oresult->response . '(' . $oresult->rankvalue . ')';
+                    }
+                } else {
+                    if (isset($otherresultcontent[$oresult->choice_id])) {
+                        $otherresultcontent[$oresult->choice_id] .=  $oresult->response . '(' . $oresult->rankvalue . '), ';
+                    } else {
+                        $otherresultcontent[$oresult->choice_id] = $oresult->response . '(' . $oresult->rankvalue . '), ';
+                    }
+                }
+            }
+        }
+        return $otherresultcontent;
     }
 
     /**
@@ -415,9 +478,11 @@ class rank extends responsetype {
         global $DB;
 
         $answers = [];
-        $sql = 'SELECT id, response_id as responseid, question_id as questionid, choice_id as choiceid, rankvalue as value ' .
-            'FROM {' . static::response_table() .'} ' .
-            'WHERE response_id = ? ';
+        $sql = 'SELECT r.id, r.response_id as responseid, r.question_id as questionid, r.choice_id as choiceid, r.rankvalue as value, rt.response as otheresponse ' .
+                'FROM {' . static::response_table() .'} r ' .
+                'LEFT JOIN {questionnaire_response_other} rt ON rt.choice_id = r.choice_id
+                 AND r.question_id = rt.question_id AND r.response_id = rt.response_id' .
+                ' WHERE r.response_id = ? ';
         $records = $DB->get_records_sql($sql, [$rid]);
         foreach ($records as $record) {
             $answers[$record->questionid][$record->choiceid] = answer\answer::create_from_data($record);
@@ -634,6 +699,9 @@ class rank extends responsetype {
                         if ($contents->modname) {
                             $content = $contents->text;
                         }
+                    }
+                    if (\mod_questionnaire\question\choice\choice::content_other_choice_display($content)) {
+                        $content = \mod_questionnaire\question\choice\choice::content_other_choice_display($content);
                     }
                     if ($osgood) {
                         $choicecol1 = new \stdClass();
@@ -892,6 +960,10 @@ class rank extends responsetype {
                     // Ensure there are two bits of content.
                     list($content, $contentright) = array_merge(preg_split('/[|]/', $content), array(' '));
                     $header = reset($pagetags->totals->headers);
+                    $responsetxt = \mod_questionnaire\question\choice\choice::content_other_choice_display($content);
+                    if (isset($rows[$content]) && $responsetxt) {
+                        $content = $responsetxt . $rows[$content]->content;
+                    }
                     $totalcols[] = (object)['align' => $header->align,
                         'text' => format_text($content, FORMAT_HTML, ['noclean' => true])];
                 } else {
@@ -899,6 +971,10 @@ class rank extends responsetype {
                     $contents = questionnaire_choice_values($content);
                     if ($contents->modname) {
                         $content = $contents->text;
+                    }
+                    $responsetxt = \mod_questionnaire\question\choice\choice::content_other_choice_display($content);
+                    if (isset($rows[$content]) && $responsetxt) {
+                        $content = $responsetxt . $rows[$content]->content;
                     }
                     $header = reset($pagetags->totals->headers);
                     $totalcols[] = (object)['align' => $header->align,
