@@ -543,6 +543,19 @@ function questionnaire_get_incomplete_users($cm, $sid,
                     $group,
                     '',
                     true)) {
+    return false;
+    }
+	
+	$sql = "SELECT u.id, u.username           
+			FROM {user} u
+			INNER JOIN {role_assignments} ra ON ra.userid = u.id
+			INNER JOIN {context} ct ON ct.id = ra.contextid
+			INNER JOIN {course} c ON c.id = ct.instanceid
+			INNER JOIN {role} r ON r.id = ra.roleid
+			INNER JOIN {course_categories} cc ON cc.id = c.category      
+			WHERE r.shortname = 'student' && c.id = $COURSE->id ";
+			
+    if(!$allusers = $DB->get_records_sql($sql)){
         return false;
     }
     $allusers = array_keys($allusers);
