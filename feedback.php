@@ -115,9 +115,7 @@ if ($settings = $feedbackform->get_data()) {
                 if ($settings->feedbacksections == 1) {
                     $sdata->chart_type = $settings->chart_type_global;
                 } else if ($settings->feedbacksections == 2) {
-                    $sdata->chart_type = $settings->chart_type_two_sections;
-                } else if ($settings->feedbacksections > 2) {
-                    $sdata->chart_type = $settings->chart_type_sections;
+                    $sdata->chart_type = $settings->chart_type_sections;                
                 }
             }
         } else {

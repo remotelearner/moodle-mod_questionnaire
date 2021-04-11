@@ -34,7 +34,14 @@ class feedback_form extends \moodleform {
 
     public function definition() {
         global $questionnaire;
-
+        // We need to get the number of current feedbacksections to allow the radar chart type or not.
+		global $DB;
+        $sid = $questionnaire->survey->id;
+		$sql = 'SELECT COUNT(*) ' .
+           'FROM {questionnaire_fb_sections} ' .
+           'WHERE surveyid = '.$sid;
+		$numfeedbacksections = $DB->count_records_sql($sql, [$sid]);
+		
         $mform =& $this->_form;
 
         // Questionnaire Feedback Sections and Messages.
@@ -71,29 +78,18 @@ class feedback_form extends \moodleform {
                 'bipolar' => get_string('chart:bipolar', 'questionnaire'),
                 'hbar' => get_string('chart:hbar', 'questionnaire'),
                 'rose' => get_string('chart:rose', 'questionnaire')];
-            $chartgroup[] = $mform->createElement('select', 'chart_type_two_sections',
-                get_string('chart:type', 'questionnaire') . ' (' .
-                get_string('feedbackbysection', 'questionnaire') . ')', $charttypes);
-            if ($questionnaire->survey->feedbacksections > 1) {
-                $mform->setDefault('chart_type_two_sections', $questionnaire->survey->chart_type);
+            // The radar charttype is only available if there are at least 3 feedback sections.
+			if ($numfeedbacksections > 2) {
+            	$charttypes['radar'] = get_string('chart:radar', 'questionnaire');
             }
-            $mform->disabledIf('chart_type_two_sections', 'feedbacksections', 'neq', 2);
-
-            $charttypes = [null => get_string('none'),
-                'bipolar' => get_string('chart:bipolar', 'questionnaire'),
-                'hbar' => get_string('chart:hbar', 'questionnaire'),
-                'radar' => get_string('chart:radar', 'questionnaire'),
-                'rose' => get_string('chart:rose', 'questionnaire')];
             $chartgroup[] = $mform->createElement('select', 'chart_type_sections',
                 get_string('chart:type', 'questionnaire') . ' (' .
                 get_string('feedbackbysection', 'questionnaire') . ')', $charttypes);
             if ($questionnaire->survey->feedbacksections > 1) {
                 $mform->setDefault('chart_type_sections', $questionnaire->survey->chart_type);
             }
-            $mform->disabledIf('chart_type_sections', 'feedbacksections', 'eq', 0);
-            $mform->disabledIf('chart_type_sections', 'feedbacksections', 'eq', 1);
-            $mform->disabledIf('chart_type_sections', 'feedbacksections', 'eq', 2);
-
+            $mform->disabledIf('chart_type_sections', 'feedbacksections', 'neq', 2);
+            
             $mform->addGroup($chartgroup, 'chartgroup',
                 get_string('chart:type', 'questionnaire'), null, false);
             $mform->addHelpButton('chartgroup', 'chart:type', 'questionnaire');
