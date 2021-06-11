@@ -795,6 +795,26 @@ abstract class question {
     }
 
     /**
+     * Set the question extradata field in the object and database.
+     *
+     * @param boolean $hiddenresponsetostudents Whether question should be visible to students or not.
+     */
+    public function set_extradata($hiddenresponsetostudents) {
+        global $DB;
+
+        // Need to fix this messed-up qid/id issue.
+        if (isset($this->qid) && ($this->qid > 0)) {
+            $qid = $this->qid;
+        } else {
+            $qid = $this->id;
+        }
+
+        $this->extradata = json_encode(['hiddenresponsetostudents' => $hiddenresponsetostudents]);
+
+        return $DB->set_field('questionnaire_question', 'extradata', $this->extradata, ['id' => $qid]);
+    }
+
+    /**
      * Question specific display method.
      *
      * @param object $formdata

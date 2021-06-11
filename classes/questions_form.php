@@ -114,6 +114,7 @@ class questions_form extends \moodleform {
             $tid = $question->type_id;
             $qtype = $question->type;
             $required = $question->required;
+            $extradata = json_decode($question->extradata);
 
             // Get displayable list of parents for the questions in questions_form.
             if ($questionnairehasdependencies) {
@@ -260,6 +261,23 @@ class questions_form extends \moodleform {
                                     'alt' => $strrequired,
                                     'title' => $strrequired);
                     $manageqgroup[] =& $mform->createElement('image', 'requiredbutton['.$question->id.']', $reqsrc, $reqextra);
+
+                    // Implement logic to show and hide responses to students in essay questions.
+                    if ($question->type_id == QUESESSAY) {
+                        if ($extradata->hiddenresponsetostudents) {
+                            $reqsrc = $questionnaire->renderer->image_url('t/show');
+                            $strrequired = get_string('hiddenresponsetostudents', 'questionnaire');
+                        } else {
+                            $reqsrc = $questionnaire->renderer->image_url('t/hide');
+                            $strrequired = get_string('nothiddenresponsetostudents', 'questionnaire');
+                        }
+
+                        $strrequired .= ' ' . get_string('clicktoswitch', 'questionnaire');
+                        $reqextra = array('value' => $question->id,
+                                    'alt' => $strrequired,
+                                    'title' => $strrequired);
+                        $manageqgroup[] =& $mform->createElement('image', 'hiddentostudentsbutton[' . $question->id . ']', $reqsrc, $reqextra);
+                    }
                 }
                 $manageqgroup[] =& $mform->createElement('static', 'closetag_'.$question->id, '', '');
 

@@ -161,6 +161,8 @@ if ($action == 'main') {
             $qformdata->removebutton = $exformdata->removebutton;
         } else if (isset($exformdata->requiredbutton)) {
             $qformdata->requiredbutton = $exformdata->requiredbutton;
+        } else if (isset($exformdata->hiddentostudentsbutton)) {
+            $qformdata->hiddentostudentsbutton = $exformdata->hiddentostudentsbutton;
         }
 
         // Insert a section break.
@@ -206,7 +208,19 @@ if ($action == 'main') {
             }
 
             $reload = true;
+        } else if (isset($qformdata->hiddentostudentsbutton)) {
+            // Need to use the key, since IE returns the image position as the value rather than the specified
+            // value in the <input> tag.
+            $qid = key($qformdata->hiddentostudentsbutton);
 
+            $extradata = json_decode($questionnaire->questions[$qid]->extradata);
+            if ($extradata->hiddenresponsetostudents) {
+                $questionnaire->questions[$qid]->set_extradata(false);
+            } else {
+                $questionnaire->questions[$qid]->set_extradata(true);
+            }
+
+            $reload = true;
         } else if (isset($qformdata->addqbutton)) {
             if ($qformdata->type_id == QUESPAGEBREAK) { // Adding section break is handled right away....
                 $questionrec = new stdClass();

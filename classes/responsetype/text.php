@@ -96,7 +96,7 @@ class text extends responsetype {
      * @throws \dml_exception
      */
     public function get_results($rids=false, $anonymous=false) {
-        global $DB;
+        global $COURSE, $DB, $USER;
 
         $rsql = '';
         if (!empty($rids)) {
@@ -106,7 +106,7 @@ class text extends responsetype {
 
         if ($anonymous) {
             $sql = 'SELECT t.id, t.response, r.submitted AS submitted, ' .
-                    'r.questionnaireid, r.id AS rid ' .
+                    'r.questionnaireid, r.id AS rid, t.question_id AS questionid ' .
                     'FROM {'.static::response_table().'} t, ' .
                     '{questionnaire_response} r ' .
                     'WHERE question_id=' . $this->question->id . $rsql .
@@ -115,7 +115,7 @@ class text extends responsetype {
         } else {
             $sql = 'SELECT t.id, t.response, r.submitted AS submitted, r.userid, u.username AS username, ' .
                     'u.id as usrid, ' .
-                    'r.questionnaireid, r.id AS rid ' .
+                    'r.questionnaireid, r.id AS rid, t.question_id AS questionid ' .
                     'FROM {'.static::response_table().'} t, ' .
                     '{questionnaire_response} r, ' .
                     '{user} u ' .
@@ -124,7 +124,25 @@ class text extends responsetype {
                     ' AND u.id = r.userid ' .
                     'ORDER BY u.lastname, u.firstname, r.submitted';
         }
-        return $DB->get_records_sql($sql, $params);
+
+        $responses = $DB->get_records_sql($sql, $params);
+
+        // We're using this field to hide the question response to students.
+        if (\ltiservice_gradebookservices\local\service\gradebookservices::is_user_gradable_in_course($COURSE->id, $USER->id)) {
+            foreach ($responses as $response) {
+                $userid = $DB->get_field('questionnaire_response', 'userid', ['id' => $response->rid]);
+
+                $extradata = $DB->get_field('questionnaire_question', 'extradata', ['id' => $response->questionid]);
+                $extradata = json_decode($extradata);
+
+                $ownresponse = $USER->id == $userid;
+                if (!$ownresponse && $extradata->hiddenresponsetostudents) {
+                    $responses[$response->id]->response = get_string('cannotviewquestionresponse', 'questionnaire');
+                }
+            }
+        }
+
+        return $responses;
     }
 
     /**
