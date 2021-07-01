@@ -62,6 +62,21 @@ class date extends responsetype {
     }
 
     /**
+     * Provide an array of answer objects from mobile data for the question.
+     *
+     * @param \stdClass $responsedata All of the responsedata as an object.
+     * @param \mod_questionnaire\question\question $question
+     * @return array \mod_questionnaire\responsetype\answer\answer An array of answer objects.
+     */
+    static public function answers_from_appdata($responsedata, $question) {
+        if (isset($responsedata->{'q'.$question->id}) && !empty($responsedata->{'q'.$question->id})) {
+            // The app can send the date including time (e.g. 2021-06-28T09:03:46.613+02:00), get only the date.
+            $responsedata->{'q'.$question->id} = substr($responsedata->{'q'.$question->id}[0], 0, 10);
+        }
+        return static::answers_from_webform($responsedata, $question);
+    }
+
+    /**
      * @param \mod_questionnaire\responsetype\response\response\ $responsedata
      * @return bool|int
      * @throws \coding_exception

@@ -41,6 +41,7 @@
         "pagenum": 0,
         "nextpage": 1,
         "prevpage": 0,
+        "hasmorepages": 1,
         "completed": "1",
         "complete_userdate": "Monday, 17 December 2018, 3:34pm",
         "emptypage": "0",
@@ -92,75 +93,100 @@
         <ion-card>
             <ion-list>
                 <%#pagequestions%>
-                <ion-list-header text-wrap>
-                    <%#autonumquestions%><ion-badge color="dark" item-start><%qnum%></ion-badge><%/autonumquestions%>
-                    <core-format-text text="<%content%>"></core-format-text>
-                    <%#required%><ion-badge item-end color="danger">{{ 'plugin.mod_questionnaire.required' | translate }}</ion-badge><%/required%>
-                </ion-list-header>
+                <ion-item class="ion-text-wrap">
+                    <%#autonumquestions%><ion-badge color="dark" slot="start"><%qnum%></ion-badge><%/autonumquestions%>
+                    <ion-label>
+                        <core-format-text text="<%content%>"></core-format-text>
+                    </ion-label>
+                    <%#required%><ion-badge slot="end" color="danger">{{ 'plugin.mod_questionnaire.required' | translate }}</ion-badge><%/required%>
+                </ion-item>
                 <%#isselect%>
-                    <%> mod_questionnaire/mobile_select_question %>
+                    <%> mod_questionnaire/local/mobile/latest/select_question %>
                 <%/isselect%>
                 <%#isbool%>
-                    <%> mod_questionnaire/mobile_boolean_question %>
+                    <%> mod_questionnaire/local/mobile/latest/boolean_question %>
                 <%/isbool%>
                 <%#isradiobutton%>
-                    <%> mod_questionnaire/mobile_radio_question %>
+                    <%> mod_questionnaire/local/mobile/latest/radio_question %>
                 <%/isradiobutton%>
                 <%#ischeckbox%>
-                    <%> mod_questionnaire/mobile_checkbox_question %>
+                    <%> mod_questionnaire/local/mobile/latest/checkbox_question %>
                 <%/ischeckbox%>
                 <%#istextessay%>
-                    <%> mod_questionnaire/mobile_text_question %>
+                    <%> mod_questionnaire/local/mobile/latest/text_question %>
                 <%/istextessay%>
                 <%#isnumeric%>
-                    <%> mod_questionnaire/mobile_numeric_question %>
+                    <%> mod_questionnaire/local/mobile/latest/numeric_question %>
                 <%/isnumeric%>
                 <%#isdate%>
-                    <%> mod_questionnaire/mobile_date_question %>
+                    <%> mod_questionnaire/local/mobile/latest/date_question %>
                 <%/isdate%>
                 <%#israte%>
-                    <%> mod_questionnaire/mobile_rate_question %>
+                    <%> mod_questionnaire/local/mobile/latest/rate_question %>
                 <%/israte%>
                 <%/pagequestions%>
 
                 <%^pagequestions%>
-                <p>No questions found.</p>
+                <ion-item>
+                    <ion-label>
+                        <p>No questions found.</p>
+                    </ion-label>
+                </ion-item>
                 <%/pagequestions%>
 
-                <%#prevpage%>
-                <button ion-button item-end outline icon-start block core-site-plugins-new-content component="mod_questionnaire" method="mobile_view_activity"
-                        [args]="{
-                                        cmid: <%cmid%>,
-                                        rid: <%rid%>,
-                                        completeq: 1,
-                                        action: 'previouspage',
-                                        pagenum: <%pagenum%>
-                                    }"
-                        [useOtherData]="null"
-                        [preSets]="{getFromCache: 0, saveToCache: 0}"
-                        refreshOnSuccess="true"
-                        samePage="true" type="submit"
-                ><ion-icon name="arrow-back"></ion-icon> {{ 'plugin.mod_questionnaire.previouspage' | translate }}</button>
-                <%/prevpage%>
+                <%#hasmorepages%>
+                <ion-grid class="ion-text-wrap">
+                    <ion-row>
+                        <%#prevpage%>
+                        <ion-col>
+                            <ion-button expand="block" fill="outline" core-site-plugins-new-content component="mod_questionnaire"
+                                method="mobile_view_activity"
+                                [args]="{
+                                                cmid: <%cmid%>,
+                                                rid: <%rid%>,
+                                                completeq: 1,
+                                                action: 'previouspage',
+                                                pagenum: <%pagenum%>
+                                            }"
+                                [useOtherData]="null"
+                                [preSets]="{getFromCache: 0, saveToCache: 0}"
+                                refreshOnSuccess="true"
+                                samePage="true" type="submit"
+                            >
+                                <ion-icon name="fas-chevron-left" slot="start" aria-hidden="true"></ion-icon>
+                                {{ 'plugin.mod_questionnaire.previouspage' | translate }}
+                            </ion-button>
+                        </ion-col>
+                        <%/prevpage%>
 
-                <%#nextpage%>
-                <button ion-button item-end outline icon-end block core-site-plugins-new-content component="mod_questionnaire" method="mobile_view_activity"
-                        [args]="{
-                                    cmid: <%cmid%>,
-                                    rid: <%rid%>,
-                                    completeq: 1,
-                                    action: 'nextpage',
-                                    pagenum: <%pagenum%>
-                                }"
-                        [useOtherData]="null"
-                        [preSets]="{getFromCache: 0, saveToCache: 0}"
-                        refreshOnSuccess="true"
-                        samePage="true" type="submit"
-                >{{ 'plugin.mod_questionnaire.nextpage' | translate }} <ion-icon name="arrow-forward"></ion-icon></button>
-                <%/nextpage%>
+                        <%#nextpage%>
+                        <ion-col>
+                            <ion-button expand="block" fill="outline" core-site-plugins-new-content component="mod_questionnaire"
+                                method="mobile_view_activity"
+                                [args]="{
+                                                cmid: <%cmid%>,
+                                                rid: <%rid%>,
+                                                completeq: 1,
+                                                action: 'nextpage',
+                                                pagenum: <%pagenum%>
+                                            }"
+                                [useOtherData]="null"
+                                [preSets]="{getFromCache: 0, saveToCache: 0}"
+                                refreshOnSuccess="true"
+                                samePage="true" type="submit"
+                            >
+                                <ion-icon name="fas-chevron-right" slot="end" aria-hidden="true"></ion-icon>
+                                {{ 'plugin.mod_questionnaire.nextpage' | translate }}
+                            </ion-button>
+                        </ion-col>
+                        <%/nextpage%>
+                    </ion-row>
+                </ion-grid>
+                <%/hasmorepages%>
 
                 <%^nextpage%><%^completed%>
-                <button ion-button block core-site-plugins-new-content component="mod_questionnaire" method="mobile_view_activity"
+                <ion-button expand="block" class="ion-margin" core-site-plugins-new-content component="mod_questionnaire"
+                        method="mobile_view_activity"
                         [args]="{
                                     questionnaireid: <%id%>,
                                     surveyid: <%surveyid%>,
@@ -176,7 +202,7 @@
                         [preSets]="{getFromCache: 0, saveToCache: 0}"
                         refreshOnSuccess="true"
                         samePage="true" type="submit"
-                >{{ 'plugin.mod_questionnaire.savechanges' | translate }}</button>
+                >{{ 'plugin.mod_questionnaire.savechanges' | translate }}</ion-button>
                 <%/completed%><%/nextpage%>
             </ion-list>
         </ion-card>
