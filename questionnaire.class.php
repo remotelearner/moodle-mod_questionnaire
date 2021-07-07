@@ -1172,11 +1172,11 @@ class questionnaire {
             $this->survey_render($formdata->sec, $msg, $formdata);
             $controlbuttons = [];
             if ($formdata->sec > 1) {
-                $controlbuttons['prev'] = ['type' => 'submit', 'class' => 'btn btn-secondary',
+                $controlbuttons['prev'] = ['type' => 'submit', 'class' => 'btn btn-secondary control-button-prev',
                     'value' => '<< '.get_string('previouspage', 'questionnaire')];
             }
             if ($this->resume) {
-                $controlbuttons['resume'] = ['type' => 'submit', 'class' => 'btn btn-secondary',
+                $controlbuttons['resume'] = ['type' => 'submit', 'class' => 'btn btn-secondary control-button-save',
                     'value' => get_string('save', 'questionnaire')];
             }
 
@@ -1184,10 +1184,10 @@ class questionnaire {
 
             if ($formdata->sec == $numsections) {
                 $controlbuttons['submittype'] = ['type' => 'hidden', 'value' => 'Submit Survey'];
-                $controlbuttons['submit'] = ['type' => 'submit', 'class' => 'btn btn-primary',
+                $controlbuttons['submit'] = ['type' => 'submit', 'class' => 'btn btn-primary control-button-submit',
                     'value' => get_string('submitsurvey', 'questionnaire')];
             } else {
-                $controlbuttons['next'] = ['type' => 'submit', 'class' => 'btn btn-secondary',
+                $controlbuttons['next'] = ['type' => 'submit', 'class' => 'btn btn-secondary control-button-next',
                     'value' => get_string('nextpage', 'questionnaire').' >>'];
             }
             $this->page->add_to_page('controlbuttons', $this->renderer->complete_controlbuttons($controlbuttons));
@@ -1729,7 +1729,11 @@ class questionnaire {
             }
             if (!$this->questions[$questionid]->response_complete($formdata)) {
                 $missing++;
-                $strmissing .= get_string('num', 'questionnaire').$qnum.'. ';
+                $strnum = get_string('num', 'questionnaire').$qnum.'. ';
+                $strmissing .= $strnum;
+                // Pop-up   notification at the point of the error.
+                $strnoti = get_string('missingquestion', 'questionnaire').$strnum;
+                $this->questions[$questionid]->add_notification($strnoti);
             }
             if (!$this->questions[$questionid]->response_valid($formdata)) {
                 $wrongformat++;

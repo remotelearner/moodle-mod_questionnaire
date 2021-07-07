@@ -180,6 +180,37 @@ td.selected {
     float: right;
 }
 
+#page-mod-questionnaire-complete .mod_questionnaire_controlbuttons {
+    text-align: center;
+    width: 100%;
+    position: relative;
+}
+
+#page-mod-questionnaire-complete .mod_questionnaire_controlbuttons .control-button-prev {
+    float: left;
+}
+
+#page-mod-questionnaire-complete .mod_questionnaire_controlbuttons .control-button-save {
+    margin-left: 20%;
+}
+
+#page-mod-questionnaire-complete .mod_questionnaire_controlbuttons .control-button-prev + .control-button-save {
+    margin-left: 0;
+}
+
+#page-mod-questionnaire-complete .mod_questionnaire_controlbuttons .control-button-next,
+#page-mod-questionnaire-complete .mod_questionnaire_controlbuttons .control-button-submit {
+    float: right;
+}
+
+#page-mod-questionnaire-complete .mod_questionnaire_controlbuttons input {
+    margin-right: 0;
+}
+
+#page-mod-questionnaire-complete .mod_questionnaire_completepage .generalbox .notice {
+    padding: 0.5em 0 0.5em 0;
+}
+
 /* progress bar styling */
 
 #page-mod-questionnaire-complete .questionnaire-progressbar {
@@ -296,6 +327,17 @@ td.selected {
 
 .qn-answer > label + input[type=radio] {
     margin-left: 0;
+}
+
+.qn-answer > textarea,
+.qn-content .editor_atto_wrap .editor_atto_content {
+    resize: vertical;
+}
+
+.qn-answer textarea,
+.qn-answer input[type="text"] {
+    box-sizing: border-box;
+    height: auto;
 }
 
 #notice .qn-question {
