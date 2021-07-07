@@ -128,13 +128,14 @@ if ($questionnaire->capabilities->readownresponses && ($usernumresp > 0)) {
         $argstr .= '&byresponse=1&action=vresp';
     }
     $questionnaire->page->add_to_page('yourresponse',
-        '<a href="'.$CFG->wwwroot.htmlspecialchars('/mod/questionnaire/myreport.php?'.$argstr).'">'.$titletext.'</a>');
+        '<a href="' .$CFG->wwwroot.htmlspecialchars('/mod/questionnaire/myreport.php?' . $argstr).
+        '" class="btn btn-primary">' . $titletext . '</a>');
 }
 
 if ($questionnaire->can_view_all_responses($usernumresp)) {
     $argstr = 'instance='.$questionnaire->id.'&group='.$currentgroupid;
     $questionnaire->page->add_to_page('allresponses',
-        '<a href="'.$CFG->wwwroot.htmlspecialchars('/mod/questionnaire/report.php?'.$argstr).'">'.
+        '<a href="'.$CFG->wwwroot.htmlspecialchars('/mod/questionnaire/report.php?'.$argstr).'" class="btn btn-primary">'.
         get_string('viewallresponses', 'questionnaire').'</a>');
 }
 

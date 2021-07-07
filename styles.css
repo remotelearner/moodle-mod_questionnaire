@@ -388,3 +388,7 @@ td.selected {
 .qn-indent {
     margin-left: 20px;
 }
+
+#page-mod-questionnaire-view .mod_questionnaire_viewpage .yourresponse {
+    padding: 15px 0 15px 0;
+}
