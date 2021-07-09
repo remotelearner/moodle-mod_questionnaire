@@ -56,6 +56,41 @@ class sectiontext extends question {
         return true;
     }
 
+    public function supports_mobile() {
+        return true;
+    }
+
+    /**
+     * @param $qnum
+     * @param $fieldkey
+     * @param bool $autonum
+     * @return \stdClass
+     * @throws \coding_exception
+     */
+    public function mobile_question_display($qnum, $autonum = false) {
+        $options = ['noclean' => true, 'para' => false, 'filter' => true,
+                    'context' => $this->context, 'overflowdiv' => true];
+        $mobiledata = (object)[
+                'id' => $this->id,
+                'name' => $this->name,
+                'type_id' => $this->type_id,
+                'length' => $this->length,
+                'content' => format_text(file_rewrite_pluginfile_urls($this->content, 'pluginfile.php', $this->context->id,
+                        'mod_questionnaire', 'question', $this->id), FORMAT_HTML, $options),
+                'content_stripped' => strip_tags($this->content),
+                'required' => false,
+                'deleted' => $this->deleted,
+                'response_table' => $this->responsetable,
+                'fieldkey' => $this->mobile_fieldkey(),
+                'precise' => $this->precise,
+                'qnum' => '',
+                'errormessage' => get_string('required') . ': ' . $this->name
+        ];
+
+        $mobiledata->issectiontext = true;
+        return $mobiledata;
+    }
+
     /**
      * True if question type supports feedback scores and weights. Same as supports_feedback() by default.
      */
