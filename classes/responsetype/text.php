@@ -216,7 +216,7 @@ class text extends responsetype {
 
             if ($showtotals == 1) {
                 $pagetags->total = new \stdClass();
-                $pagetags->total->total = "$respondents/$participants";
+                $pagetags->total->total = "($respondents)";
             }
         } else {
             $nbresponses = 0;
@@ -256,7 +256,7 @@ class text extends responsetype {
 
                 if ($showtotals == 1) {
                     $pagetags->total = new \stdClass();
-                    $pagetags->total->total = "$respondents/$participants";
+                    $pagetags->total->total = "($respondents)";
                     $pagetags->total->evencolor = $evencolor;
                 }
             }

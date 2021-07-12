@@ -553,4 +553,22 @@ class renderer extends \plugin_renderer_base {
 
         return $this->render_from_template('mod_questionnaire/dataformat_selector', $data);
     }
+
+    /**
+     * @param $urlroot
+     * @param $options
+     * @param $userview
+     * @return string
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     */
+    public function viewresponse_print_menu($urlroot, $options, $userview) {
+        if (!$urlroot instanceof \moodle_url) {
+            $urlroot = new \moodle_url($urlroot);
+        }
+        $select = new \single_select($urlroot, 'responsestats', $options, $userview, null);
+        $select->label = get_string('view');
+        $output = $this->render($select);
+        return $output;
+    }
 }

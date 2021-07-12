@@ -654,3 +654,7 @@ $string['yesno_help'] = 'Simple Yes/No question.';
 $string['yourresponse'] = 'Your response';
 $string['yourresponses'] = 'Your responses';
 $string['crontask'] = 'Questionnaire cleanup job';
+$string['allresponses'] = 'All responses';
+$string['fullsubmissions'] = 'Full submissions';
+$string['responsesnotsubmitted'] = 'Responses not submitted';
+$string['submissions'] = 'Submissions';

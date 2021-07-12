@@ -653,11 +653,13 @@ class questionnaire {
 
     /**
      * True if the user can view the responses to this questionnaire, and there are valid responses.
+     *
      * @param null $usernumresp
+     * @param bool $isviewreport
      * @return bool
      * @throws coding_exception
      */
-    public function can_view_all_responses($usernumresp = null) {
+    public function can_view_all_responses($usernumresp = null, $isviewreport = false) {
         global $USER, $DB, $SESSION;
 
         $owner = $this->is_survey_owner();
@@ -683,7 +685,7 @@ class questionnaire {
         }
 
         $grouplogic = $canviewgroups || $canviewallgroups;
-        $respslogic = ($numresp > 0) && ($numselectedresps > 0);
+        $respslogic = ($numresp > 0) && ($numselectedresps > 0) || $isviewreport;
         return $this->can_view_all_responses_anytime($grouplogic, $respslogic) ||
             $this->can_view_all_responses_with_restrictions($usernumresp, $grouplogic, $respslogic);
     }
@@ -790,15 +792,20 @@ class questionnaire {
             $sql = 'SELECT r.* ' .
                 'FROM {questionnaire_response} r ' .
                 $groupsql .
-                'WHERE r.questionnaireid = :questionnaireid AND r.complete = :status' . $groupcnd;
+                'WHERE r.questionnaireid = :questionnaireid' . $groupcnd;
             $params['questionnaireid'] = $this->id;
-            $params['status'] = 'y';
         }
         if ($userid) {
             $sql .= ' AND r.userid = :userid';
             $params['userid'] = $userid;
         }
 
+        $status = optional_param('responsestats', 'y', PARAM_ALPHANUM);
+        if ($status) {
+            $status = ($status === 'n') ? 'n' : 'y';
+            $sql .= ' AND r.complete = :status';
+            $params['status'] = $status;
+        }
         $sql .= ' ORDER BY r.id';
         return $DB->get_records_sql($sql, $params);
     }
@@ -2678,6 +2685,7 @@ class questionnaire {
             $numresps = 1;
         } else {
             $navbar = false;
+            $userview = optional_param('responsestats', 0, PARAM_ALPHA);
             if ($uid !== false) { // One participant only.
                 $rows = $this->get_responses($uid);
                 // All participants or all members of a group.
@@ -2694,8 +2702,12 @@ class questionnaire {
                 return;
             }
             $numresps = count($rows);
+            $respondentstring = get_string('responses', 'questionnaire');
+            if ($userview === 'y') {
+                $respondentstring = get_string('submissions', 'questionnaire');
+            }
             $this->page->add_to_page('respondentinfo',
-                ' '.get_string('responses', 'questionnaire').': <strong>'.$numresps.'</strong>');
+                    ' ' . $respondentstring . ': <strong>' . $numresps . '</strong>');
             if (empty($rows)) {
                 $errmsg = get_string('erroropening', 'questionnaire') .' '. get_string('noresponsedata', 'questionnaire');
                 return($errmsg);

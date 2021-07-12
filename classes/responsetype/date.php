@@ -195,7 +195,7 @@ class date extends responsetype {
 
             if ($showtotals == 1) {
                 $pagetags->total = new \stdClass();
-                $pagetags->total->total = "$numresps/$participants";
+                $pagetags->total->total = "($respondents)";
             }
         }
 

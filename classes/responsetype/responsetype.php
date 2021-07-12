@@ -206,7 +206,7 @@ abstract class responsetype {
             if ($showtotals) {
                 $pagetags->total = new \stdClass();
                 if ($respondents > 0) {
-                    $percent = round((float)$respondents / (float)$participants * 100.0);
+                    $percent = 100;
                 } else {
                     $percent = 0;
                 }
@@ -228,7 +228,7 @@ abstract class responsetype {
                 $pagetags->total->width2 = $percent * 1.4;
                 $pagetags->total->image2 = $imageurl . 'thbar.gif';
                 $pagetags->total->percent = sprintf('&nbsp;%.'.$precision.'f%%', $percent);
-                $pagetags->total->total = "$respondents/$participants";
+                $pagetags->total->total = "($respondents)";
                 $pagetags->total->evencolor = $evencolor;
             }
         }

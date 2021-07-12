@@ -887,7 +887,7 @@ class rank extends responsetype {
                 $nbna = $this->counts[$content]->nbna;
                 // TOTAL number of responses for this possible answer.
                 $total = $this->counts[$content]->num;
-                $nbresp = '<strong>'.$total.'</strong>';
+                $nbresp = '<strong>('.$total.')</strong>';
                 if ($osgood) {
                     // Ensure there are two bits of content.
                     list($content, $contentright) = array_merge(preg_split('/[|]/', $content), array(' '));
