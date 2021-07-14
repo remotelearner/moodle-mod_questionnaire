@@ -3301,7 +3301,7 @@ class questionnaire {
 
             // It's possible for a response to exist for a deleted question. Ignore these.
             if (!isset($this->questions[$qid])) {
-                break;
+                continue;
             }
 
             $question = $this->questions[$qid];
